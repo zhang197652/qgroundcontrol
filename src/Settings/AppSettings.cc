@@ -127,7 +127,6 @@ void AppSettings::_checkSavePathDirectories(void)
 
 void AppSettings::_indoorPaletteChanged(void)
 {
-    qgcApp()->_loadCurrentStyleSheet();
     QGCPalette::setGlobalTheme(indoorPalette()->rawValue().toBool() ? QGCPalette::Dark : QGCPalette::Light);
 }
 

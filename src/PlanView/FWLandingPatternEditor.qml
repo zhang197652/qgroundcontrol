@@ -37,7 +37,6 @@ Rectangle {
     property var    _missionVehicle:                _masterControler.controllerVehicle
     property real   _margin:                    ScreenTools.defaultFontPixelWidth / 2
     property real   _spacer:                    ScreenTools.defaultFontPixelWidth / 2
-    property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
     property string _setToVehicleHeadingStr:    qsTr("Set to vehicle heading")
     property string _setToVehicleLocationStr:   qsTr("Set to vehicle location")
     property bool   _showCameraSection:         !_missionVehicle.apmFirmware
@@ -98,8 +97,8 @@ Rectangle {
 
             QGCButton {
                 text:       _setToVehicleHeadingStr
-                visible:    _activeVehicle
-                onClicked:  missionItem.landingHeading.rawValue = _activeVehicle.heading.rawValue
+                visible:    activeVehicle
+                onClicked:  missionItem.landingHeading.rawValue = activeVehicle.heading.rawValue
             }
         }
 
@@ -168,9 +167,9 @@ Rectangle {
 
                 QGCButton {
                     text:               _setToVehicleLocationStr
-                    visible:            _activeVehicle
+                    visible:            activeVehicle
                     Layout.columnSpan:  2
-                    onClicked:          missionItem.landingCoordinate = _activeVehicle.coordinate
+                    onClicked:          missionItem.landingCoordinate = activeVehicle.coordinate
                 }
             }
         }
@@ -237,17 +236,17 @@ Rectangle {
             anchors.right:          parent.right
             horizontalAlignment:    Text.AlignHCenter
             text:                   qsTr("- or -")
-            visible:                _activeVehicle
+            visible:                activeVehicle
         }
 
         QGCButton {
             anchors.horizontalCenter:   parent.horizontalCenter
             text:                       _setToVehicleLocationStr
-            visible:                    _activeVehicle
+            visible:                    activeVehicle
 
             onClicked: {
-                missionItem.landingCoordinate = _activeVehicle.coordinate
-                missionItem.landingHeading.rawValue = _activeVehicle.heading.rawValue
+                missionItem.landingCoordinate = activeVehicle.coordinate
+                missionItem.landingHeading.rawValue = activeVehicle.heading.rawValue
             }
         }
     }

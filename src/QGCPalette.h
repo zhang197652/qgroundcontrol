@@ -103,25 +103,26 @@ public:
     DEFINE_QGC_COLOR(alertBorder,           setAlertBorder)
     DEFINE_QGC_COLOR(alertText,             setAlertText)
     DEFINE_QGC_COLOR(missionItemEditor,     setMissionItemEditor)
+    DEFINE_QGC_COLOR(hoverColor,            setHoverColor)
 
-     QGCPalette(QObject* parent = NULL);
+     QGCPalette(QObject* parent = nullptr);
     ~QGCPalette();
-    
+
     bool colorGroupEnabled      (void) const { return _colorGroupEnabled; }
     void setColorGroupEnabled   (bool enabled);
-    
+
     static Theme    globalTheme     (void) { return _theme; }
     static void     setGlobalTheme  (Theme newTheme);
 
 signals:
     void paletteChanged ();
-    
+
 private:
     static void _buildMap                   (void);
     static void _signalPaletteChangeToAll   (void);
     void        _signalPaletteChanged       (void);
     void        _themeChanged               (void);
-    
+
     static Theme                _theme;             ///< There is a single theme for all palettes
     bool                        _colorGroupEnabled; ///< Currently selected ColorGroup. true: enabled, false: disabled
 

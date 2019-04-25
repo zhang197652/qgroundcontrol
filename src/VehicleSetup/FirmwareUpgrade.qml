@@ -26,9 +26,7 @@ SetupPage {
     id:             firmwarePage
     pageComponent:  firmwarePageComponent
     pageName:       qsTr("Firmware")
-    showAdvanced:   _activeVehicle && _activeVehicle.apmFirmware
-
-    property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
+    showAdvanced:   activeVehicle && activeVehicle.apmFirmware
 
     signal cancelDialog
 
@@ -64,7 +62,6 @@ SetupPage {
             property bool   _defaultFirmwareIsPX4:  true
 
             property string firmwareWarningMessage
-            property bool   controllerCompleted:      false
             property bool   initialBoardSearch:       true
             property string firmwareName
 
@@ -76,7 +73,10 @@ SetupPage {
                 controller.cancel()
             }
 
-            QGCPalette { id: qgcPal; colorGroupEnabled: true }
+            function setupPageCompleted() {
+                controller.startBoardSearch()
+                _defaultFirmwareIsPX4 = _defaultFirmwareFact.rawValue === _defaultFimwareTypePX4 // we don't want this to be bound and change as radios are selected
+            }
 
             FirmwareUpgradeController {
                 id:             controller
@@ -84,14 +84,6 @@ SetupPage {
                 statusLog:      statusTextArea
 
                 property var activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
-
-                Component.onCompleted: {
-                    controllerCompleted = true
-                    if (qgcView.completedSignalled) {
-                        // We can only start the board search when the Qml and Controller are completely done loading
-                        controller.startBoardSearch()
-                    }
-                }
 
                 onActiveVehicleChanged: {
                     if (!activeVehicle) {
@@ -123,7 +115,7 @@ SetupPage {
                         // We end up here when we detect a board plugged in after we've started upgrade
                         statusTextArea.append(highlightPrefix + qsTr("Found device") + highlightSuffix + ": " + controller.boardType)
                         if (controller.pixhawkBoard || controller.px4FlowBoard) {
-                            showDialog(pixhawkFirmwareSelectDialogComponent, title, qgcView.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
+                            mainWindow.showDialog(pixhawkFirmwareSelectDialogComponent, title, mainWindow.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
                         }
                     }
                 }
@@ -132,14 +124,6 @@ SetupPage {
                     statusTextArea.append(flashFailText)
                     firmwarePage.cancelDialog()
                 }
-            }
-
-            Component.onCompleted: {
-                if (controllerCompleted) {
-                    // We can only start the board search when the Qml and Controller are completely done loading
-                    controller.startBoardSearch()
-                }
-                _defaultFirmwareIsPX4 = _defaultFirmwareFact.rawValue === _defaultFimwareTypePX4 // we don't want this to be bound and change as radios are selected
             }
 
             Component {
@@ -462,7 +446,7 @@ SetupPage {
                 id:         flashBootloaderButton
                 text:       qsTr("Flash ChibiOS Bootloader")
                 visible:    firmwarePage.advanced
-                onClicked:  _activeVehicle.flashBootloader()
+                onClicked:  activeVehicle.flashBootloader()
             }
 
             TextArea {
